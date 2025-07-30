@@ -4,8 +4,13 @@ import '../models/crypto_price.dart';
 
 class NobitexApi {
   static Future<List<CryptoPrice>> fetchPrices() async {
-    final url = Uri.parse('https://api.nobitex.ir/market/stats');
-    final response = await http.post(url, body: {'srcCurrency': 'usdt', 'dstCurrency': 'btc,eth,xrp,doge,ada,trx,shib,uni,dai'});
+    final url = Uri.parse('https://apiv2.nobitex.ir/market/stats');
+    final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {'srcCurrency': 'usdt', 'dstCurrency': 'btc,eth'}
+    );
+    print('Response: ${response.body}');
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
