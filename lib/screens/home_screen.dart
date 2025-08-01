@@ -36,6 +36,30 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.refresh),
             onPressed: loadPrices,
           ),
+          ElevatedButton(
+            onPressed: () async {
+              final wallets = await NobitexApi.fetchWallets();
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Your Assets'),
+                  content: SizedBox(
+                    width: double.maxFinite,
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: wallets.map((w) {
+                        return ListTile(
+                          title: Text(w.currency.toUpperCase()),
+                          subtitle: Text('Balance: ${w.balance}'),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              );
+            },
+            child: const Text('View Wallet'),
+          )
         ],
       ),
       body: isLoading
