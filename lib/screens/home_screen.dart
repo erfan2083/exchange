@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../services/nobitex_api.dart';
-import '../widgets/crypto_card.dart';
-import '../models/crypto_price.dart';
+import 'package:exchange/models/crypto_price.dart';
+import 'package:exchange/services/nobitex_api.dart';
+import 'package:exchange/widgets/crypto_card.dart';
+import 'package:exchange/screens/order_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +22,37 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => isLoading = false);
   }
 
+  Future<void> showWalletDialog() async {
+    final wallets = await NobitexApi.fetchWallets();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('💰 Your Wallet'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: wallets.isEmpty
+              ? const Text("No non-zero assets found.")
+              : ListView.builder(
+            shrinkWrap: true,
+            itemCount: wallets.length,
+            itemBuilder: (context, index) {
+              final w = wallets[index];
+              return ListTile(
+                leading: const Icon(Icons.account_balance_wallet_outlined),
+                title: Text(w.currency.toUpperCase()),
+                subtitle: Text('Balance: ${w.balance}'),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+        ],
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -29,46 +62,53 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('رمزارزها - نوبیتکس'),
+        title: const Text('💹 Nobitex Market'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: loadPrices,
           ),
-          ElevatedButton(
-            onPressed: () async {
-              final wallets = await NobitexApi.fetchWallets();
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Your Assets'),
-                  content: SizedBox(
-                    width: double.maxFinite,
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: wallets.map((w) {
-                        return ListTile(
-                          title: Text(w.currency.toUpperCase()),
-                          subtitle: Text('Balance: ${w.balance}'),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              );
-            },
-            child: const Text('View Wallet'),
-          )
         ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: prices.length,
-        itemBuilder: (context, index) {
-          return CryptoCard(price: prices[index]);
-        },
+      body: Column(
+        children: [
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton.icon(
+                onPressed: showWalletDialog,
+                icon: const Icon(Icons.wallet),
+                label: const Text('My Wallet'),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const OrderScreen()),
+                  );
+                },
+                icon: const Icon(Icons.add_shopping_cart),
+                label: const Text('New Order'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : prices.isEmpty
+                ? const Center(child: Text("No data available"))
+                : ListView.builder(
+              itemCount: prices.length,
+              itemBuilder: (context, index) {
+                return CryptoCard(price: prices[index]);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
