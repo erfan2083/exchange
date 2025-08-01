@@ -7,9 +7,9 @@ class CryptoPrice {
 
   factory CryptoPrice.fromJson(String symbol, Map<String, dynamic> data) {
     return CryptoPrice(
-      symbol: symbol,
-      buyPrice: double.parse(data['buy']),
-      sellPrice: double.parse(data['sell']),
+      symbol: symbol.toUpperCase(),
+      buyPrice: double.tryParse(data['bestBuy'] ?? '0') ?? 0,
+      sellPrice: double.tryParse(data['bestSell'] ?? '0') ?? 0,
     );
   }
 }
