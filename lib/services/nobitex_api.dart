@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../models/crypto_price.dart';
+import '../models/wallet.dart';
 
 class NobitexApi {
   static Future<List<CryptoPrice>> fetchPrices() async {
@@ -27,6 +29,36 @@ class NobitexApi {
       }).toList();
     } catch (e) {
       print('API error: $e');
+      return [];
+    }
+  }
+
+  static Future<List<Wallet>> fetchWallets() async {
+    try {
+      final storage = FlutterSecureStorage();
+      final apiKey = await storage.read(key: 'api_key');
+      if (apiKey == null || apiKey.isEmpty) throw Exception('API Key missing');
+
+      final url = Uri.parse('https://apiv2.nobitex.ir/users/wallets/list');
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token $apiKey',
+          'Content-Type': 'application/json'
+        },
+      );
+
+      final json = jsonDecode(response.body);
+      if (json['status'] != 'ok') throw Exception('Unauthorized or failed');
+
+      final wallets = (json['wallets'] as List)
+          .map((item) => Wallet.fromJson(item))
+          .where((wallet) => wallet.balance != '0')
+          .toList();
+
+      return wallets;
+    } catch (e) {
+      print('Wallet fetch error: $e');
       return [];
     }
   }
