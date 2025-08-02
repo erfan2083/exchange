@@ -5,6 +5,8 @@ import 'package:exchange/widgets/crypto_card.dart';
 import 'package:exchange/screens/order_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'active_orders_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -93,6 +95,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: const Icon(Icons.add_shopping_cart),
                 label: const Text('New Order'),
               ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveOrdersScreen()));
+                },
+                icon: const Icon(Icons.receipt_long),
+                label: const Text('Active Orders'),
+              ),
+
             ],
           ),
           const SizedBox(height: 12),
