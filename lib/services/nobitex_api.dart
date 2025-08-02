@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import '../models/crypto_price.dart';
 import '../models/wallet.dart';
 import '../models/active_order.dart';
+import '../models/coin_stats.dart';
+
 
 class NobitexApi {
   static Future<List<CryptoPrice>> fetchPrices() async {
@@ -91,5 +93,19 @@ class NobitexApi {
       print('Active order error: $e');
       return [];
     }
+  }
+
+  static Future<CoinStats> fetchCoinStats(String symbol) async {
+    final src = symbol.toLowerCase();
+    final url = Uri.parse('https://apiv2.nobitex.ir/market/stats?srcCurrency=$src&dstCurrency=rls');
+
+    final response = await http.get(url);
+    final data = jsonDecode(response.body);
+    if (data['status'] != 'ok') {
+      throw Exception('API returned error');
+    }
+
+    final stats = data['stats']['$src-rls'];
+    return CoinStats.fromJson(symbol, stats);
   }
 }
