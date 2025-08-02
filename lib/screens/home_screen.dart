@@ -4,8 +4,9 @@ import 'package:exchange/services/nobitex_api.dart';
 import 'package:exchange/widgets/crypto_card.dart';
 import 'package:exchange/screens/order_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'active_orders_screen.dart';
+import 'coin_detail_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -114,9 +115,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 : ListView.builder(
               itemCount: prices.length,
               itemBuilder: (context, index) {
-                return CryptoCard(price: prices[index]);
+                final coin = prices[index];
+                final srcCurrency =coin.symbol.split('-')[0]; // میشه: btc
+                return ListTile(
+                  title: Text('${coin.symbol}'),
+                  subtitle: Text('${coin.buyPrice} IRT'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CoinDetailScreen(symbol: srcCurrency.toLowerCase()),
+                      ),
+                    );
+                  },
+                );
               },
-            ),
+            )
           ),
         ],
       ),
