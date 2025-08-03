@@ -108,4 +108,5 @@ class NobitexApi {
     final stats = data['stats']['$src-rls'];
     return CoinStats.fromJson(symbol, stats);
   }
+
 }
