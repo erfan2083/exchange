@@ -4,6 +4,7 @@ import 'package:exchange/services/nobitex_api.dart';
 import 'package:exchange/widgets/crypto_card.dart';
 import 'package:exchange/screens/order_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:intl/intl.dart';
 import 'active_orders_screen.dart';
 import 'coin_detail_screen.dart';
 
@@ -119,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final srcCurrency =coin.symbol.split('-')[0]; // میشه: btc
                 return ListTile(
                   title: Text('${coin.symbol}'),
-                  subtitle: Text('${coin.buyPrice} IRT'),
+                  subtitle: Text('${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.buyPrice)} IRT'),
                   onTap: () {
                     Navigator.push(
                       context,

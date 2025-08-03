@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/coin_stats.dart';
 import '../services/nobitex_api.dart';
 
@@ -39,14 +40,14 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Current Price: ${coin.latest.toStringAsFixed(0).toCurrencyString(mantissaLength: 0)} Rials',
+                Text('Current Price: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.latest)} Rials',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
-                Text('Buy: ${coin.bestBuy} | Sell: ${coin.bestSell}'),
+                Text('Buy: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.bestBuy)} | Sell: ${coin.bestSell}'),
                 const SizedBox(height: 10),
-                Text('High: ${coin.dayHigh} | Low: ${coin.dayLow}'),
+                Text('High: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.dayHigh)} | Low: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.dayLow)}'),
                 const SizedBox(height: 10),
-                Text('Change: ${coin.dayChange}%', style: TextStyle(
+                Text('Change: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.dayChange)}%', style: TextStyle(
                     color: coin.dayChange >= 0 ? Colors.green : Colors.red
                 )),
                 const Spacer(),
