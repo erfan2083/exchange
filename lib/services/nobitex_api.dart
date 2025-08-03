@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import '../models/candle_data.dart';
 import '../models/crypto_price.dart';
 import '../models/wallet.dart';
 import '../models/active_order.dart';
@@ -109,4 +110,33 @@ class NobitexApi {
     return CoinStats.fromJson(symbol, stats);
   }
 
+
+  static Future<List<CandleData>> fetchCandleData(String symbol,
+      {String resolution = 'D', int countBack = 30}) async {
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final uri = Uri.parse('https://apiv2.nobitex.ir/market/udf/history').replace(
+      queryParameters: {
+        'symbol': symbol,
+        'resolution': resolution,
+        'to': now.toString(),
+        'countback': countBack.toString(),
+      },
+    );
+
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      if (json['s'] == 'ok') {
+        List<CandleData> candles = [];
+        for (int i = 0; i < json['t'].length; i++) {
+          candles.add(CandleData.fromJson(json, i));
+        }
+        return candles;
+      } else {
+        throw Exception('No chart data: ${json['errmsg'] ?? json['s']}');
+      }
+    } else {
+      throw Exception('HTTP error: ${response.statusCode}');
+    }
+  }
 }
