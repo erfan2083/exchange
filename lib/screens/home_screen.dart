@@ -5,6 +5,7 @@ import 'package:exchange/widgets/crypto_card.dart';
 import 'package:exchange/screens/order_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
+import '../models/wallet.dart';
 import 'active_orders_screen.dart';
 import 'coin_detail_screen.dart';
 
@@ -19,10 +20,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<CryptoPrice> prices = [];
   bool isLoading = false;
+  List<Wallet> wallets = [];
 
   Future<void> loadPrices() async {
     setState(() => isLoading = true);
     prices = await NobitexApi.fetchPrices();
+    setState(() => isLoading = false);
+  }
+
+  Future<void> loadWallet() async {
+    setState(() => isLoading = true);
+    wallets = await NobitexApi.fetchWallets();
     setState(() => isLoading = false);
   }
 
@@ -31,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     loadPrices();
+    loadWallet();
   }
 
   @override
@@ -60,8 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text('\$7,556',
+                children: [
+                  Text('${wallets.length}',
                       style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -82,9 +91,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _highlightCoinTile('BTC', '\$41,944', Colors.deepPurple),
-                _highlightCoinTile('ETH', '\$2,884', Colors.green),
-                _highlightCoinTile('BCH', '\$298', Colors.purple),
+                _highlightCoinTile(prices[0].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[0].buyPrice), Colors.deepPurple),
+                _highlightCoinTile(prices[1].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[1].buyPrice), Colors.green),
+                _highlightCoinTile(prices[4].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[4].buyPrice), Colors.purple),
               ],
             ),
 
