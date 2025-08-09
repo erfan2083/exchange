@@ -48,7 +48,7 @@ class NobitexApi {
         url,
         headers: {
           'Authorization': 'Token $apiKey',
-          'Content-Type': 'application/json'
+          //'Content-Type': 'application/json'
         },
       );
 
