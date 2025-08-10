@@ -147,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
         onPressed: () {
-          // Reload logic
+          loadPrices();
+          loadWallet();
         },
         child: const Icon(Icons.refresh),
       ),
@@ -162,6 +163,7 @@ Widget _highlightCoinTile(String symbol, String price, Color color) {
     decoration: BoxDecoration(
       color: const Color(0xFF1D1E3D),
       borderRadius: BorderRadius.circular(16),
+
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -180,6 +182,7 @@ Widget _highlightCoinTile(String symbol, String price, Color color) {
                 color: Colors.white, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
         Text(price, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+
       ],
     ),
   );
