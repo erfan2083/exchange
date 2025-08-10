@@ -57,7 +57,7 @@ class NobitexApi {
 
       final wallets = (json['wallets'] as List)
           .map((item) => Wallet.fromJson(item))
-          .where((wallet) => wallet.balance != '0')
+          //.where((wallet) => wallet.balance == '0')
           .toList();
 
       return wallets;

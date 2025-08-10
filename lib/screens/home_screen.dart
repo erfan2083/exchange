@@ -70,16 +70,16 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${wallets.length}',
+                  Text('${wallets.isEmpty? '\$0' : '\$' + (double.parse(wallets[0].balance) / prices[3].buyPrice as String)}',
                       style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                           color: Colors.white)),
                   SizedBox(height: 8),
-                  Text('214,198,634 Toman',
+                  Text('${wallets.isEmpty? '0 Rial' : wallets[0].balance + ' Rial'}',
                       style: TextStyle(color: Colors.white70, fontSize: 16)),
                   SizedBox(height: 8),
-                  Text('USDT Price: 28,349 Toman',
+                  Text('USDT Price: ' + '${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[3].buyPrice)} Rial',
                       style: TextStyle(color: Colors.white54, fontSize: 14)),
                 ],
               ),
