@@ -187,25 +187,3 @@ Widget _highlightCoinTile(String symbol, String price, Color color) {
     ),
   );
 }
-
-class _assetRow extends StatelessWidget {
-  final String symbol;
-  final String amount;
-  final String value;
-
-  const _assetRow(this.symbol, this.amount, this.value);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: Colors.black87,
-        child: Text(symbol,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
-      ),
-      title: Text(symbol, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(amount),
-      trailing: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-    );
-  }
-}
