@@ -56,33 +56,42 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             // Wallet Card
-            Container(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF9A1B43), Color(0xFF3E1E68)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.all(24),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('${wallets.isEmpty? '\$0' : '\$' + (double.parse(wallets[0].balance) / prices[3].buyPrice as String)}',
-                      style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white)),
-                  SizedBox(height: 8),
-                  Text('${wallets.isEmpty? '0 Rial' : wallets[0].balance + ' Rial'}',
-                      style: TextStyle(color: Colors.white70, fontSize: 16)),
-                  SizedBox(height: 8),
-                  Text('USDT Price: ' + '${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[3].buyPrice)} Rial',
-                      style: TextStyle(color: Colors.white54, fontSize: 14)),
-                ],
-              ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const OrderScreen()),
+                );
+              },
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF9A1B43), Color(0xFF3E1E68)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.all(24),
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${wallets.isEmpty? '\$0' : '\$' + (double.parse(wallets[0].balance) / prices[3].buyPrice as String)}',
+                            style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                        SizedBox(height: 8),
+                        Text('${wallets.isEmpty? '0 Rial' : wallets[0].balance + ' Rial'}',
+                            style: TextStyle(color: Colors.white70, fontSize: 16)),
+                        SizedBox(height: 8),
+                        Text('USDT Price: ' + '${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[3].buyPrice)} Rial',
+                            style: TextStyle(color: Colors.white54, fontSize: 14)),
+                      ],
+                    ),
+                  ),
             ),
 
             const SizedBox(height: 24),
@@ -107,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: SizedBox( // استفاده از SizedBox به جای Expanded
-                height: MediaQuery.of(context).size.height * 0.6, // مثلاً 60٪ ارتفاع صفحه
+                height: MediaQuery.of(context).size.height * 0.5, // مثلاً 60٪ ارتفاع صفحه
                 child: isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : prices.isEmpty
