@@ -44,122 +44,134 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF121330), // Deep navy background
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text('My Crypto Wallet'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Wallet Card
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const OrderScreen()),
-                );
-              },
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF9A1B43), Color(0xFF3E1E68)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.all(24),
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${wallets.isEmpty? '\$0' : '\$' + (double.parse(wallets[0].balance) / prices[3].buyPrice as String)}',
-                            style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white)),
-                        SizedBox(height: 8),
-                        Text('${wallets.isEmpty? '0 Rial' : wallets[0].balance + ' Rial'}',
-                            style: TextStyle(color: Colors.white70, fontSize: 16)),
-                        SizedBox(height: 8),
-                        Text('USDT Price: ' + '${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[3].buyPrice)} Rial',
-                            style: TextStyle(color: Colors.white54, fontSize: 14)),
-                      ],
-                    ),
-                  ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Highlight coins
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _highlightCoinTile(prices[0].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[0].buyPrice), Colors.deepPurple),
-                _highlightCoinTile(prices[1].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[1].buyPrice), Colors.green),
-                _highlightCoinTile(prices[4].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[4].buyPrice), Colors.purple),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            // Portfolio list
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(32),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: SizedBox( // استفاده از SizedBox به جای Expanded
-                height: MediaQuery.of(context).size.height * 0.5, // مثلاً 60٪ ارتفاع صفحه
-                child: isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : prices.isEmpty
-                    ? const Center(child: Text("No data available"))
-                    : ListView.builder(
-                  itemCount: prices.length,
-                  itemBuilder: (context, index) {
-                    final coin = prices[index];
-                    final srcCurrency = coin.symbol.split('-')[0]; // میشه: btc
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.black87,
-                        child: Text('${coin.symbol.split('-')[0]}',
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
-                      ),
-                      title: Text('${coin.symbol.split('-')[0]}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                      trailing: Text(
-                          '${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.buyPrice)}',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CoinDetailScreen(symbol: srcCurrency.toLowerCase()),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFF121330), // top color
+            Color(0xFF3E1E68), // bottom color
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black,
-        onPressed: () {
-          loadPrices();
-          loadWallet();
-        },
-        child: const Icon(Icons.refresh),
+      child: Scaffold(
+        backgroundColor: Colors.transparent, // Deep navy background
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text('My Crypto Wallet'),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // Wallet Card
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const OrderScreen()),
+                  );
+                },
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF9A1B43), Color(0xFF3E1E68)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.all(24),
+                      width: double.infinity,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('${wallets.isEmpty? '\$0' : '\$' + (double.parse(wallets[0].balance) / prices[3].buyPrice as String)}',
+                              style: TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                          SizedBox(height: 8),
+                          Text('${wallets.isEmpty? '0 Rial' : wallets[0].balance + ' Rial'}',
+                              style: TextStyle(color: Colors.white70, fontSize: 16)),
+                          SizedBox(height: 8),
+                          Text('USDT Price: ' + '${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[3].buyPrice)} Rial',
+                              style: TextStyle(color: Colors.white54, fontSize: 14)),
+                        ],
+                      ),
+                    ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Highlight coins
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _highlightCoinTile(prices[0].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[0].buyPrice), Colors.deepPurple),
+                  _highlightCoinTile(prices[1].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[1].buyPrice), Colors.green),
+                  _highlightCoinTile(prices[4].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[4].buyPrice), Colors.purple),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+
+              // Portfolio list
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: SizedBox( // استفاده از SizedBox به جای Expanded
+                  height: MediaQuery.of(context).size.height * 0.5, // مثلاً 60٪ ارتفاع صفحه
+                  child: isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : prices.isEmpty
+                      ? const Center(child: Text("No data available"))
+                      : ListView.builder(
+                    itemCount: prices.length,
+                    itemBuilder: (context, index) {
+                      final coin = prices[index];
+                      final srcCurrency = coin.symbol.split('-')[0]; // میشه: btc
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.black87,
+                          child: Text('${coin.symbol.split('-')[0]}',
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                        ),
+                        title: Text('${coin.symbol.split('-')[0]}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        trailing: Text(
+                            '${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.buyPrice)}',
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CoinDetailScreen(symbol: srcCurrency.toLowerCase()),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.black,
+          onPressed: () {
+            loadPrices();
+            loadWallet();
+          },
+          child: const Icon(Icons.refresh),
+        ),
       ),
     );
   }
@@ -172,6 +184,9 @@ Widget _highlightCoinTile(String symbol, String price, Color color) {
     decoration: BoxDecoration(
       color: const Color(0xFF1D1E3D),
       borderRadius: BorderRadius.circular(16),
+      border: Border.all(
+        color: Color(0xFF121330)
+      )
 
     ),
     child: Column(
