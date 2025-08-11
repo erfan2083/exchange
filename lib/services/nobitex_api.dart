@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../models/candle_data.dart';
 import '../models/crypto_price.dart';
+import '../models/ohlc_data.dart';
 import '../models/wallet.dart';
 import '../models/active_order.dart';
 import '../models/coin_stats.dart';
@@ -138,5 +139,37 @@ class NobitexApi {
     } else {
       throw Exception('HTTP error: ${response.statusCode}');
     }
+  }
+
+  static Future<List<OhlcData>> fetchOhlcData(String symbol) async {
+    // Ensure uppercase like BTCIRT
+    final fullSymbol = '${symbol.toUpperCase()}IRT';
+
+    // Unix time range (last 7 days)
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final from = now - (7 * 24 * 60 * 60);
+
+    final url = Uri.parse(
+      'https://apiv2.nobitex.ir/market/udf/history?symbol=$fullSymbol&resolution=D&from=$from&to=$now',
+    );
+
+    final res = await http.get(url);
+    if (res.statusCode != 200) throw Exception('Failed to load OHLC');
+
+    final data = jsonDecode(res.body);
+
+    if (data['s'] != 'ok') throw Exception('Invalid OHLC response');
+
+    final List<OhlcData> chartData = [];
+    for (int i = 0; i < data['t'].length; i++) {
+      chartData.add(OhlcData(
+        time: DateTime.fromMillisecondsSinceEpoch(data['t'][i] * 1000),
+        open: (data['o'][i] as num).toDouble(),
+        high: (data['h'][i] as num).toDouble(),
+        low: (data['l'][i] as num).toDouble(),
+        close: (data['c'][i] as num).toDouble(),
+      ));
+    }
+    return chartData;
   }
 }
