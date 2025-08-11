@@ -112,36 +112,10 @@ class NobitexApi {
   }
 
 
-  static Future<List<CandleData>> fetchCandleData(String symbol,
-      {String resolution = 'D', int countBack = 30}) async {
-    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final uri = Uri.parse('https://apiv2.nobitex.ir/market/udf/history').replace(
-      queryParameters: {
-        'symbol': symbol,
-        'resolution': resolution,
-        'to': now.toString(),
-        'countback': countBack.toString(),
-      },
-    );
-
-    final response = await http.get(uri);
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      if (json['s'] == 'ok') {
-        List<CandleData> candles = [];
-        for (int i = 0; i < json['t'].length; i++) {
-          candles.add(CandleData.fromJson(json, i));
-        }
-        return candles;
-      } else {
-        throw Exception('No chart data: ${json['errmsg'] ?? json['s']}');
-      }
-    } else {
-      throw Exception('HTTP error: ${response.statusCode}');
-    }
-  }
-
-  static Future<List<OhlcData>> fetchOhlcData(String symbol) async {
+  static Future<List<OhlcData>> fetchOhlcData(
+      String symbol, {
+        String resolution = "D", // Default daily
+      }) async {
     // Ensure uppercase like BTCIRT
     final fullSymbol = '${symbol.toUpperCase()}IRT';
 
@@ -150,7 +124,11 @@ class NobitexApi {
     final from = now - (7 * 24 * 60 * 60);
 
     final url = Uri.parse(
-      'https://apiv2.nobitex.ir/market/udf/history?symbol=$fullSymbol&resolution=D&from=$from&to=$now',
+      'https://apiv2.nobitex.ir/market/udf/history'
+          '?symbol=$fullSymbol'
+          '&resolution=$resolution'
+          '&from=$from'
+          '&to=$now',
     );
 
     final res = await http.get(url);
