@@ -18,12 +18,20 @@ class CoinDetailScreen extends StatefulWidget {
 class _CoinDetailScreenState extends State<CoinDetailScreen> {
   late Future<CoinStats> futureStats;
   late Future<List<OhlcData>> futureOhlc;
+  String selectedInterval = "D"; // Default interval
 
   @override
   void initState() {
     super.initState();
     futureStats = NobitexApi.fetchCoinStats(widget.symbol);
-    futureOhlc = NobitexApi.fetchOhlcData(widget.symbol);
+    futureOhlc = NobitexApi.fetchOhlcData(widget.symbol, resolution: selectedInterval);
+  }
+
+  void _updateInterval(String interval) {
+    setState(() {
+      selectedInterval = interval;
+      futureOhlc = NobitexApi.fetchOhlcData(widget.symbol, resolution: selectedInterval);
+    });
   }
 
   @override
@@ -32,8 +40,8 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFF121330), // top
-            Color(0xFF3E1E68), // bottom
+            Color(0xFF121330),
+            Color(0xFF3E1E68),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -59,57 +67,69 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// ====== PRICE INFO ======
-                  Text(
-                    'Current Price: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.latest)} Rials',
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Buy: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.bestBuy)} | Sell: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.bestSell)}',
-                    style: const TextStyle(color: Colors.white70),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'High: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.dayHigh)} | Low: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.dayLow)}',
-                    style: const TextStyle(color: Colors.white70),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Change: ${coin.dayChange.toStringAsFixed(2)}%',
-                    style: TextStyle(
-                      color: coin.dayChange >= 0 ? Colors.greenAccent : Colors.redAccent,
-                      fontWeight: FontWeight.bold,
+                  /// ===== BEAUTIFUL PRICE SECTION =====
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1D1F4A),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.latest),
+                          style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.greenAccent,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            _priceInfo("High", coin.dayHigh),
+                            _priceInfo("Low", coin.dayLow),
+                            _priceInfo("Change", 0, change :coin.dayChange, isChange: true),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
 
                   const SizedBox(height: 20),
 
-                  /// ====== CHART SECTION ======
+                  /// ===== CHART SECTION =====
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1D1F4A), // Lighter dark background
+                      color: const Color(0xFF1D1F4A),
                       borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        )
-                      ],
                     ),
                     padding: const EdgeInsets.all(12),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Price Chart",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                        /// Interval selector
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: ["15", "60", "D"].map((interval) {
+                            return ChoiceChip(
+                              label: Text(interval,
+                                  style: TextStyle(
+                                    color: selectedInterval == interval
+                                        ? Colors.black
+                                        : Colors.white,
+                                  )),
+                              selected: selectedInterval == interval,
+                              selectedColor: Colors.greenAccent,
+                              backgroundColor: Colors.transparent,
+                              onSelected: (_) => _updateInterval(interval),
+                            );
+                          }).toList(),
                         ),
                         const SizedBox(height: 10),
 
+                        /// Chart
                         FutureBuilder<List<OhlcData>>(
                           future: futureOhlc,
                           builder: (context, chartSnap) {
@@ -133,13 +153,10 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
                                   zoomMode: ZoomMode.x,
                                 ),
                                 primaryXAxis: DateTimeAxis(
-                                  majorGridLines: const MajorGridLines(width: 0),
-                                  axisLine: const AxisLine(width: 0),
                                   labelStyle: const TextStyle(color: Colors.white70),
                                 ),
                                 primaryYAxis: NumericAxis(
                                   opposedPosition: true,
-                                  majorGridLines: const MajorGridLines(color: Colors.white12),
                                   labelStyle: const TextStyle(color: Colors.white70),
                                 ),
                                 series: <CandleSeries>[
@@ -162,40 +179,87 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
                     ),
                   ),
 
-                  const Spacer(),
+                  const SizedBox(height: 20),
 
-                  /// ====== BUY / SELL BUTTONS ======
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.greenAccent,
-                            foregroundColor: Colors.black,
+                  /// ===== BUY / SELL ORDER SECTION =====
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1D1F4A),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: [
+                        const Text("Place Order", style: TextStyle(fontSize: 18, color: Colors.white)),
+                        const SizedBox(height: 10),
+                        TextField(
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: "Amount",
+                            hintStyle: const TextStyle(color: Colors.white54),
+                            filled: true,
+                            fillColor: const Color(0xFF2C2F5A),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          child: const Text('Buy'),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {},
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.redAccent),
-                            foregroundColor: Colors.redAccent,
+                        const SizedBox(height: 10),
+                        TextField(
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: "Price",
+                            hintStyle: const TextStyle(color: Colors.white54),
+                            filled: true,
+                            fillColor: const Color(0xFF2C2F5A),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          child: const Text('Sell'),
                         ),
-                      ),
-                    ],
-                  )
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(backgroundColor: Colors.greenAccent),
+                                child: const Text("Buy", style: TextStyle(color: Colors.black)),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                                child: const Text("Sell", style: TextStyle(color: Colors.white)),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );
           },
         ),
       ),
+    );
+  }
+
+  Widget _priceInfo(String label, int value, {bool isChange = false, double change = 0.00}) {
+    return Column(
+      children: [
+        Text(label, style: const TextStyle(color: Colors.white54, fontSize: 14)),
+        const SizedBox(height: 4),
+        Text(
+          isChange ? "${change.toStringAsFixed(2)}%" : NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(value),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: isChange
+                ? (value >= 0 ? Colors.greenAccent : Colors.redAccent)
+                : Colors.white,
+          ),
+        ),
+      ],
     );
   }
 }
