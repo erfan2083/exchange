@@ -20,6 +20,60 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
   late Future<List<OhlcData>> futureOhlc;
   String selectedInterval = "D"; // Default interval
 
+
+  final amountController = TextEditingController();
+  final priceController = TextEditingController();
+
+  Future<void> _handleOrder(String type) async {
+    try {
+      final balances = await NobitexApi.getBalances();
+      final srcCurrency = widget.symbol.toLowerCase();
+      final double amount = double.tryParse(amountController.text) ?? 0;
+      final double price = double.tryParse(priceController.text) ?? 0;
+
+      if (amount <= 0 || price <= 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter valid amount and price")),
+        );
+        return;
+      }
+
+      if (type == "buy") {
+        double totalCost = amount * price;
+        double availableIRT = balances["irt"] ?? 0;
+        if (availableIRT < totalCost) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Not enough IRT balance")),
+          );
+          return;
+        }
+      } else if (type == "sell") {
+        double availableCoin = balances[srcCurrency] ?? 0;
+        if (availableCoin < amount) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Not enough $srcCurrency balance")),
+          );
+          return;
+        }
+      }
+
+      final message = await NobitexApi.placeOrder(
+        type: type,
+        symbol: "${widget.symbol.toUpperCase()}IRT",
+        amount: amount,
+        price: price,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
+
+
+
   @override
   void initState() {
     super.initState();
@@ -217,7 +271,7 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () => _handleOrder("buy"),
                                   style: ElevatedButton.styleFrom(backgroundColor: Colors.greenAccent),
                                   child: const Text("Buy", style: TextStyle(color: Colors.black)),
                                 ),
@@ -225,7 +279,7 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
                               const SizedBox(width: 10),
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () => _handleOrder("sell"),
                                   style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                                   child: const Text("Sell", style: TextStyle(color: Colors.white)),
                                 ),
@@ -244,6 +298,7 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
       ),
     );
   }
+
 
   Widget _priceInfo(String label, int value, {bool isChange = false, double change = 0.00}) {
     return Column(
