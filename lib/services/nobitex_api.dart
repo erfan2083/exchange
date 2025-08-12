@@ -157,4 +157,75 @@ class NobitexApi {
     return chartData;
   }
 
+
+  // === GET BALANCE ===
+  static Future<Map<String, double>> getBalances() async {
+    final storage = FlutterSecureStorage();
+    final apiKey = await storage.read(key: 'api_key');
+    if (apiKey == null || apiKey.isEmpty) throw Exception('Missing API Key');
+
+    final response = await http.post(
+      Uri.parse("https://apiv2.nobitex.ir/users/wallets/list"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token $apiKey", // Replace with your token
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to fetch balances");
+    }
+
+    final data = jsonDecode(response.body);
+    if (data["status"] != "ok") {
+      throw Exception(data["message"] ?? "Failed to fetch balances");
+    }
+
+    Map<String, double> balances = {};
+    for (var wallet in data["wallets"]) {
+      balances[wallet["currency"].toLowerCase()] =
+          double.parse(wallet["balance"]);
+    }
+    return balances;
+  }
+
+// === PLACE ORDER ===
+  static Future<String> placeOrder({
+    required String type, // buy or sell
+    required String symbol, // BTCIRT
+    required double amount,
+    required double price,
+    String execution = "limit",
+  }) async {
+    final srcCurrency = symbol.substring(0, 3).toLowerCase();
+    final dstCurrency = symbol.substring(3).toLowerCase();
+
+    final response = await http.post(
+      Uri.parse("https://apiv2.nobitex.ir/market/orders/add"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token YOUR_API_KEY",
+      },
+      body: jsonEncode({
+        "type": type,
+        "execution": execution,
+        "srcCurrency": srcCurrency,
+        "dstCurrency": dstCurrency,
+        "amount": amount.toString(),
+        "price": price.toString(),
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to place order");
+    }
+
+    final data = jsonDecode(response.body);
+    if (data["status"] == "ok") {
+      return "Order placed successfully!";
+    } else {
+      return "Error: ${data['message'] ?? 'Unknown error'}";
+    }
+  }
+
 }
