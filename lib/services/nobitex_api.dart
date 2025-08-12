@@ -114,21 +114,27 @@ class NobitexApi {
 
   static Future<List<OhlcData>> fetchOhlcData(
       String symbol, {
-        String resolution = "D", // Default daily
+        String resolution = "D", // Default: daily candles
+        int? fromTimestamp,      // Optional custom start time (Unix)
+        int? toTimestamp,        // Optional custom end time (Unix)
       }) async {
-    // Ensure uppercase like BTCIRT
-    final fullSymbol = '${symbol.toUpperCase()}IRT';
 
-    // Unix time range (last 7 days)
+    // Ensure uppercase symbol, but don't force IRT if symbol already has a suffix
+    final fullSymbol = symbol.contains("IRT") || symbol.contains("USDT")
+        ? symbol.toUpperCase()
+        : '${symbol.toUpperCase()}IRT';
+
+    // Default time range: last 7 days
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final from = now - (7 * 24 * 60 * 60);
+    final to = toTimestamp ?? now;
+    final from = fromTimestamp ?? (to - (7 * 24 * 60 * 60));
 
     final url = Uri.parse(
       'https://apiv2.nobitex.ir/market/udf/history'
           '?symbol=$fullSymbol'
           '&resolution=$resolution'
           '&from=$from'
-          '&to=$now',
+          '&to=$to',
     );
 
     final res = await http.get(url);
@@ -150,4 +156,5 @@ class NobitexApi {
     }
     return chartData;
   }
+
 }
