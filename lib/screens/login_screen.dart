@@ -30,24 +30,39 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login to Nobitex')),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const Text('Enter your Nobitex API Key:', style: TextStyle(fontSize: 16)),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _controller,
-              decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'API Key'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: isSaving ? null : _saveApiKey,
-              child: isSaving ? const CircularProgressIndicator() : const Text('Save and Continue'),
-            ),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFF121330), // top color
+            Color(0xFF3E1E68), // bottom color
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Login to Nobitex'),
+        backgroundColor: Colors.transparent),
+        backgroundColor: Colors.transparent,
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const Text('Enter your Nobitex API Key:', style: TextStyle(fontSize: 24, color: Colors.white)),
+              const SizedBox(height: 60),
+              TextField(
+                controller: _controller,
+                decoration: const InputDecoration(border: OutlineInputBorder(borderRadius:  BorderRadius.all(Radius.circular(30))),
+                                                  labelText: 'API Key', fillColor: Colors.white, filled: true),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: isSaving ? null : _saveApiKey,
+                child: isSaving ? const CircularProgressIndicator() : const Text('Save and Continue'),
+              ),
+            ],
+          ),
         ),
       ),
     );
