@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../models/wallet.dart';
 import 'active_orders_screen.dart';
 import 'coin_detail_screen.dart';
+import 'login_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -61,6 +62,20 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: const Text('My Crypto Wallet'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        LoginScreen(),
+                  ),
+                );
+              }
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
