@@ -53,8 +53,18 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 60),
               TextField(
                 controller: _controller,
-                decoration: const InputDecoration(border: OutlineInputBorder(borderRadius:  BorderRadius.all(Radius.circular(30))),
-                                                  labelText: 'API Key', fillColor: Colors.white, filled: true),
+                decoration: InputDecoration(
+                  hintText: "API Key",
+                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 18),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none, // No border line
+                  ),
+                ),
+                style: const TextStyle(color: Colors.black),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
