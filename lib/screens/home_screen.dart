@@ -36,6 +36,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
+
+  final storage = FlutterSecureStorage();
+
+  Future<void> _logout(BuildContext context) async {
+    await storage.deleteAll(); // Remove saved data
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  }
+
+
+
   @override
   void initState() {
     super.initState();
@@ -65,15 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.logout),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        LoginScreen(),
-                  ),
-                );
-              }
+              onPressed: () => _logout(context),
             ),
           ],
         ),
@@ -104,16 +110,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${wallets.isEmpty? '\$0' : '\$' + (double.parse(wallets[0].balance) / prices[3].buyPrice as String)}',
+                          Text(
+                              (wallets.isEmpty || prices.length <= 3)
+                                  ? '\$0'
+                                  : '\$${(double.parse(wallets[0].balance) / prices[3].buyPrice).toStringAsFixed(2)}',
                               style: TextStyle(
                                   fontSize: 32,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white)),
                           SizedBox(height: 8),
-                          Text('${wallets.isEmpty? '0 Rial' : wallets[0].balance + ' Rial'}',
+                          Text(
+                              wallets.isEmpty
+                                  ? '0 Rial'
+                                  : '${NumberFormat.currency(locale: "en_US", symbol: "").format(wallets[0].balance)} Rial',
                               style: TextStyle(color: Colors.white70, fontSize: 16)),
                           SizedBox(height: 8),
-                          Text('USDT Price: ' + '${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[3].buyPrice)} Rial',
+                          Text(prices.length <= 3
+                              ? 'USDT Price: 0 Rial'
+                              : 'USDT Price: ${NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[3].buyPrice)} Rial',
                               style: TextStyle(color: Colors.white54, fontSize: 14)),
                         ],
                       ),
@@ -126,9 +140,18 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _highlightCoinTile(prices[0].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[0].buyPrice), Colors.deepPurple),
-                  _highlightCoinTile(prices[1].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[1].buyPrice), Colors.green),
-                  _highlightCoinTile(prices[4].symbol.split('-')[0], NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[4].buyPrice), Colors.purple),
+                  if (prices.length > 0)
+                    _highlightCoinTile(prices[0].symbol.split('-')[0],
+                        NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[0].buyPrice),
+                        Colors.deepPurple),
+                  if (prices.length > 1)
+                    _highlightCoinTile(prices[1].symbol.split('-')[0],
+                        NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[1].buyPrice),
+                        Colors.green),
+                  if (prices.length > 4)
+                    _highlightCoinTile(prices[4].symbol.split('-')[0],
+                        NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[4].buyPrice),
+                        Colors.purple),
                 ],
               ),
 
