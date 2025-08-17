@@ -144,15 +144,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (prices.length > 0)
                     _highlightCoinTile(prices[0].symbol.split('-')[0],
                         NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[0].buyPrice),
-                        Colors.deepPurple),
+                        Colors.deepPurple, context),
                   if (prices.length > 1)
                     _highlightCoinTile(prices[1].symbol.split('-')[0],
                         NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[1].buyPrice),
-                        Colors.green),
+                        Colors.green, context),
                   if (prices.length > 4)
                     _highlightCoinTile(prices[4].symbol.split('-')[0],
                         NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[4].buyPrice),
-                        Colors.purple),
+                        Colors.purple, context),
                 ],
               ),
 
@@ -216,37 +216,49 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-Widget _highlightCoinTile(String symbol, String price, Color color) {
-  return Container(
-    width: 100,
-    padding: const EdgeInsets.symmetric(vertical: 12),
-    decoration: BoxDecoration(
-      color: const Color(0xFF1D1E3D),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: Color(0xFF121330)
-      )
-
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CircleAvatar(
-          backgroundColor: color,
-          radius: 12,
-          child: Text(
-            symbol[0],
-            style: const TextStyle(color: Colors.white, fontSize: 12),
+Widget _highlightCoinTile(String symbol, String price, Color color, BuildContext context) {
+  return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                CoinDetailScreen(symbol: symbol.split('-')[0].toLowerCase()),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(symbol,
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 4),
-        Text(price, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+     child:  Container(
+      width: 100,
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1D1E3D),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Color(0xFF121330)
+        )
 
-      ],
-    ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            backgroundColor: color,
+            radius: 12,
+            child: Text(
+              symbol[0],
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(symbol,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          Text(price, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+
+        ],
+      ),
+    )
   );
 }
