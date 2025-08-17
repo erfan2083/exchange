@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const AssetsScreen(wallets: [],)),
+                    MaterialPageRoute(builder: (_) =>  AssetsScreen(wallets: wallets, prices: prices,)),
                   );
                 },
                 borderRadius: BorderRadius.circular(20),
