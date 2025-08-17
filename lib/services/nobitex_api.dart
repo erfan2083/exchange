@@ -27,11 +27,12 @@ class NobitexApi {
 
       final stats = json['stats'] as Map<String, dynamic>;
 
+      // 🟢 فیلتر کردن کوین‌هایی که قیمتشون صفر یا null هست
       return stats.entries.map((e) {
         final symbol = e.key; // e.g. btc-rls
         final data = e.value as Map<String, dynamic>;
         return CryptoPrice.fromJson(symbol, data);
-      }).toList();
+      }).where((coin) => coin.buyPrice != 0 && coin.sellPrice != 0).toList();
     } catch (e) {
       print('API error: $e');
       return [];
