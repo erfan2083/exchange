@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import '../models/wallet.dart';
 import 'active_orders_screen.dart';
+import 'assest_screen.dart';
 import 'coin_detail_screen.dart';
 import 'login_screen.dart';
 
@@ -92,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const OrderScreen()),
+                    MaterialPageRoute(builder: (_) => const AssetsScreen(wallets: [],)),
                   );
                 },
                 borderRadius: BorderRadius.circular(20),
