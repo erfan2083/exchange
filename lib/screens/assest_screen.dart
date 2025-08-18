@@ -33,75 +33,87 @@ class AssetsScreen extends StatelessWidget {
       });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("My Assets"),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFF121330), // top color
+            Color(0xFF3E1E68), // bottom color
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
-      backgroundColor: const Color(0xFF121330),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            /// Pie Chart بخش بالا
-            SizedBox(
-              height: 200,
-              child: PieChart(
-                PieChartData(
-                  sections: assetsData.map((asset) {
-                    final percent = totalValue == 0 ? 0 : asset["value"] / totalValue * 100;
-                    return PieChartSectionData(
-                      title: "${percent.toStringAsFixed(1)}%",
-                      color: Colors.primaries[assetsData.indexOf(asset) % Colors.primaries.length],
-                      value: asset["value"],
-                      radius: 80,
-                      titleStyle: const TextStyle(color: Colors.white, fontSize: 12),
-                    );
-                  }).toList(),
-                  centerSpaceRadius: 50,
-                  sectionsSpace: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("My Assets"),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        backgroundColor: const Color(0xFF121330),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              /// Pie Chart بخش بالا
+              SizedBox(
+                height: 200,
+                child: PieChart(
+                  PieChartData(
+                    sections: assetsData.map((asset) {
+                      final percent = totalValue == 0 ? 0 : asset["value"] / totalValue * 100;
+                      return PieChartSectionData(
+                        title: "${percent.toStringAsFixed(1)}%",
+                        color: Colors.primaries[assetsData.indexOf(asset) % Colors.primaries.length],
+                        value: asset["value"],
+                        radius: 80,
+                        titleStyle: const TextStyle(color: Colors.white, fontSize: 12),
+                      );
+                    }).toList(),
+                    centerSpaceRadius: 50,
+                    sectionsSpace: 2,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              "Total Value: ${NumberFormat.currency(locale: "en_US", symbol: "", decimalDigits: 0).format(totalValue)} Rial",
-              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-
-            const SizedBox(height: 24),
-
-            /// لیست کوین‌ها
-            Expanded(
-              child: ListView.builder(
-                itemCount: assetsData.length,
-                itemBuilder: (context, index) {
-                  final asset = assetsData[index];
-                  return Card(
-                    color: const Color(0xFF1D1F4A),
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.primaries[index % Colors.primaries.length],
-                        child: Text(asset["symbol"][0], style: const TextStyle(color: Colors.white)),
-                      ),
-                      title: Text(asset["symbol"], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      subtitle: Text(
-                        "${asset["amount"]} ${asset["symbol"]}",
-                        style: const TextStyle(color: Colors.white70),
-                      ),
-                      trailing: Text(
-                        "${NumberFormat.currency(locale: "en_US", symbol: "", decimalDigits: 0).format(asset["value"])} Rial",
-                        style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  );
-                },
+              const SizedBox(height: 12),
+              Text(
+                "Total Value: ${NumberFormat.currency(locale: "en_US", symbol: "", decimalDigits: 0).format(totalValue)} Rial",
+                style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 24),
+
+              /// لیست کوین‌ها
+              Expanded(
+                child: ListView.builder(
+                  itemCount: assetsData.length,
+                  itemBuilder: (context, index) {
+                    final asset = assetsData[index];
+                    return Card(
+                      color: const Color(0xFF1D1F4A),
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.primaries[index % Colors.primaries.length],
+                          child: Text(asset["symbol"][0], style: const TextStyle(color: Colors.white)),
+                        ),
+                        title: Text(asset["symbol"], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        subtitle: Text(
+                          "${asset["amount"]} ${asset["symbol"]}",
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                        trailing: Text(
+                          "${NumberFormat.currency(locale: "en_US", symbol: "", decimalDigits: 0).format(asset["value"])} Rial",
+                          style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
