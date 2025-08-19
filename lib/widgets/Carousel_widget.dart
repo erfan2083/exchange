@@ -23,9 +23,9 @@ class _HighlightCarouselState extends State<HighlightCarousel> {
   @override
   void initState() {
     super.initState();
-    _controller = PageController(viewportFraction: 0.33);
+    // 0.34 باعث میشه دقیقاً 3 کارت کامل دیده بشه، بدون فضای خالی اول
+    _controller = PageController(viewportFraction: 0.34);
 
-    // شروع تایمر اسکرول خودکار
     _startAutoScroll();
   }
 
@@ -34,14 +34,19 @@ class _HighlightCarouselState extends State<HighlightCarousel> {
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_controller.hasClients && widget.prices.isNotEmpty) {
         _currentPage++;
-        if (_currentPage >= widget.prices.length) {
-          _currentPage = 0; // وقتی به آخر رسید، برگرد به اول
+
+        if (_currentPage >= widget.prices.length - 4) {
+          // وقتی به آخر رسید → سریع ببر به اول
+          _currentPage = 0;
+          _controller.jumpToPage(0);
+        } else {
+          // در حالت عادی → انیمیشن اسکرول
+          _controller.animateToPage(
+            _currentPage,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
         }
-        _controller.animateToPage(
-          _currentPage,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        );
       }
     });
   }
@@ -55,27 +60,31 @@ class _HighlightCarouselState extends State<HighlightCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: _controller,
-      itemCount: 6,
-      onPageChanged: (index) {
-        // وقتی کاربر دستی اسکرول کرد، ادامه اسکرول از همونجا باشه
-        _currentPage = index;
-      },
-      itemBuilder: (context, index) {
-        final coin = widget.prices[index];
-        final symbol = coin.symbol.split('-')[0];
-        return _highlightCoinTile(
-          symbol,
-          NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0)
-              .format(coin.buyPrice),
-          Colors.primaries[index % Colors.primaries.length],
-          context,
-        );
-      },
+    return SizedBox(
+      height: 150, // ارتفاع مشخص برای جلوگیری از پرش
+      child: PageView.builder(
+        padEnds: false,
+        controller: _controller,
+        itemCount: widget.prices.length,
+        onPageChanged: (index) {
+          _currentPage = index; // وقتی کاربر دستی اسکرول کرد
+        },
+        itemBuilder: (context, index) {
+          final coin = widget.prices[index];
+          final symbol = coin.symbol.split('-')[0];
+          return _highlightCoinTile(
+            symbol,
+            NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0)
+                .format(coin.buyPrice),
+            Colors.primaries[index % Colors.primaries.length],
+            context,
+          );
+        },
+      ),
     );
   }
 }
+
 
 
 
