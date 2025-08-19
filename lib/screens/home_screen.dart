@@ -6,6 +6,7 @@ import 'package:exchange/screens/order_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import '../models/wallet.dart';
+import '../widgets/Carousel_widget.dart';
 import 'active_orders_screen.dart';
 import 'assest_screen.dart';
 import 'coin_detail_screen.dart';
@@ -138,22 +139,11 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 24),
 
               // Highlight coins
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (prices.length > 0)
-                    _highlightCoinTile(prices[0].symbol.split('-')[0],
-                        NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[0].buyPrice),
-                        Colors.deepPurple, context),
-                  if (prices.length > 1)
-                    _highlightCoinTile(prices[1].symbol.split('-')[0],
-                        NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[1].buyPrice),
-                        Colors.green, context),
-                  if (prices.length > 4)
-                    _highlightCoinTile(prices[4].symbol.split('-')[0],
-                        NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(prices[4].buyPrice),
-                        Colors.purple, context),
-                ],
+              SizedBox(
+                height: 120,
+                child: prices.isEmpty
+                    ? const Center(child: Text("No coins"))
+                    : HighlightCarousel(prices: prices),
               ),
 
               const SizedBox(height: 24),
