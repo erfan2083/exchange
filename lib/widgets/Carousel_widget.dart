@@ -35,7 +35,7 @@ class _HighlightCarouselState extends State<HighlightCarousel> {
       if (_controller.hasClients && widget.prices.isNotEmpty) {
         _currentPage++;
 
-        if (_currentPage >= widget.prices.length - 4) {
+        if (_currentPage > widget.prices.length - 3) {
           // وقتی به آخر رسید → سریع ببر به اول
           _currentPage = 0;
           _controller.jumpToPage(0);
