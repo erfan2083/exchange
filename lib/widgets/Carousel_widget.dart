@@ -16,20 +16,30 @@ class HighlightCarousel extends StatefulWidget {
 }
 
 class _HighlightCarouselState extends State<HighlightCarousel> {
-  final PageController _controller = PageController(viewportFraction: 0.33);
+  late PageController _controller;
   int _currentPage = 0;
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    _controller = PageController(viewportFraction: 0.33);
+
+    // شروع تایمر اسکرول خودکار
+    _startAutoScroll();
+  }
+
+  void _startAutoScroll() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_controller.hasClients && widget.prices.isNotEmpty) {
         _currentPage++;
-        if (_currentPage >= widget.prices.length) _currentPage = 0;
+        if (_currentPage >= widget.prices.length) {
+          _currentPage = 0; // وقتی به آخر رسید، برگرد به اول
+        }
         _controller.animateToPage(
           _currentPage,
-          duration: const Duration(milliseconds: 400),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
       }
@@ -48,6 +58,10 @@ class _HighlightCarouselState extends State<HighlightCarousel> {
     return PageView.builder(
       controller: _controller,
       itemCount: 6,
+      onPageChanged: (index) {
+        // وقتی کاربر دستی اسکرول کرد، ادامه اسکرول از همونجا باشه
+        _currentPage = index;
+      },
       itemBuilder: (context, index) {
         final coin = widget.prices[index];
         final symbol = coin.symbol.split('-')[0];
@@ -63,7 +77,8 @@ class _HighlightCarouselState extends State<HighlightCarousel> {
   }
 }
 
-// کارت کوچک کوین
+
+
 Widget _highlightCoinTile(
     String symbol, String price, Color color, BuildContext context) {
   return InkWell(
