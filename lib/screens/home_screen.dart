@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // Highlight coins
               SizedBox(
-                height: 120,
+                height: 110,
                 child: prices.isEmpty
                     ? const Center(child: Text("No coins"))
                     : HighlightCarousel(prices: prices.take(11).toList()),

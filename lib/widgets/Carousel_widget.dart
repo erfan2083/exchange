@@ -61,7 +61,7 @@ class _HighlightCarouselState extends State<HighlightCarousel> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 150, // ارتفاع مشخص برای جلوگیری از پرش
+      height: 120, // ارتفاع مشخص برای جلوگیری از پرش
       child: PageView.builder(
         padEnds: false,
         controller: _controller,
@@ -102,7 +102,7 @@ Widget _highlightCoinTile(
     },
     borderRadius: BorderRadius.circular(16),
     child: Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 7),
       width: 100,
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
