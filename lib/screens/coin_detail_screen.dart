@@ -100,7 +100,7 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('${widget.symbol.toUpperCase()} / IRT'),
+          title: Text('${widget.symbol.toUpperCase()} / IRT', style: TextStyle(color: Colors.white),),
           backgroundColor: Colors.transparent,
         ),
         backgroundColor: Colors.transparent,
