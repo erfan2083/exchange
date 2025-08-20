@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text('My Crypto Wallet'),
+          title: const Text('My Crypto Wallet', style: TextStyle(color: Colors.white),),
           actions: [
             IconButton(
               icon: const Icon(Icons.logout),
