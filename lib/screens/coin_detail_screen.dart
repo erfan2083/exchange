@@ -102,6 +102,7 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
         appBar: AppBar(
           title: Text('${widget.symbol.toUpperCase()} / IRT', style: TextStyle(color: Colors.white),),
           backgroundColor: Colors.transparent,
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         backgroundColor: Colors.transparent,
         body: FutureBuilder<CoinStats>(
