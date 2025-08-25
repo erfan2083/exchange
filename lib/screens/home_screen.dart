@@ -81,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.logout),
+              color: Colors.white,
               onPressed: () => _logout(context),
             ),
           ],
