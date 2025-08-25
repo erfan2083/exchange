@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Login to Nobitex'),
+        appBar: AppBar(title: const Text('Login to Nobitex', style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.transparent),
         backgroundColor: Colors.transparent,
         body: Padding(
