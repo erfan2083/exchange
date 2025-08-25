@@ -102,7 +102,7 @@ Widget _highlightCoinTile(
     },
     borderRadius: BorderRadius.circular(16),
     child: Container(
-      margin: const EdgeInsets.symmetric(horizontal: 7),
+      margin: const EdgeInsets.symmetric(horizontal: 9),
       width: 100,
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
