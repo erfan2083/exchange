@@ -46,7 +46,7 @@ class AssetsScreen extends StatelessWidget {
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("My Assets"),
+          title: const Text("My Assets", style: TextStyle(color: Colors.white),),
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
