@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../models/coin_stats.dart';
@@ -248,6 +249,10 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
                           const SizedBox(height: 10),
                           TextField(
                             style: const TextStyle(color: Colors.white),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                            ],
                             decoration: InputDecoration(
                               hintText: "Amount",
                               hintStyle: const TextStyle(color: Colors.white54),
@@ -259,6 +264,10 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
                           const SizedBox(height: 10),
                           TextField(
                             style: const TextStyle(color: Colors.white),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                            ],
                             decoration: InputDecoration(
                               hintText: "Price",
                               hintStyle: const TextStyle(color: Colors.white54),
