@@ -135,10 +135,10 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
                         children: [
                           Text(
                             NumberFormat.currency(locale: 'en_US', name: '', decimalDigits: 0).format(coin.latest),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
-                              color: Colors.greenAccent,
+                              color: coin.dayChange >= 0 ? Colors.greenAccent : Colors.redAccent
                             ),
                           ),
                           const SizedBox(height: 8),
