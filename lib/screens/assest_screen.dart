@@ -48,6 +48,7 @@ class AssetsScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text("My Assets", style: TextStyle(color: Colors.white),),
           backgroundColor: Colors.transparent,
+          iconTheme: IconThemeData(color: Colors.white),
           elevation: 0,
         ),
         backgroundColor: const Color(0xFF121330),
