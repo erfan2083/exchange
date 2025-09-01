@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:exchange/models/crypto_price.dart';
 import 'package:exchange/services/nobitex_api.dart';
-import 'package:exchange/widgets/crypto_card.dart';
-import 'package:exchange/screens/order_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import '../models/wallet.dart';
 import '../widgets/Carousel_widget.dart';
-import 'active_orders_screen.dart';
 import 'assest_screen.dart';
 import 'coin_detail_screen.dart';
 import 'login_screen.dart';
