@@ -60,6 +60,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/Crypto_logo.png
+    - assets/Crypto_logo2.png
+    - assets/logo.svg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -98,4 +100,4 @@ flutter:
 flutter_launcher_icons:
   android: true
   ios: false
-  image_path: "assets/Crypto_logo.png"
+  image_path: "assets/Crypto_logo2.png"

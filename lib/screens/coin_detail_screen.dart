@@ -80,6 +80,7 @@ class _CoinDetailScreenState extends State<CoinDetailScreen> {
     super.initState();
     futureStats = NobitexApi.fetchCoinStats(widget.symbol);
     futureOhlc = NobitexApi.fetchOhlcData(widget.symbol, resolution: selectedInterval);
+
   }
 
   void _updateInterval(String interval) {
