@@ -40,9 +40,11 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  rename: ^3.1.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.9
   flutter_test:
     sdk: flutter
 
@@ -101,3 +103,10 @@ flutter_launcher_icons:
   android: true
   ios: false
   image_path: "assets/Crypto_logo2.png"
+
+flutter_native_splash:
+  color: "#121330"       # رنگ بک‌گراند
+  image: "assets/Crypto_logo2.png"   # تصویرت (باید تو assets باشه)
+  android: true
+  ios: false
+  web: false
